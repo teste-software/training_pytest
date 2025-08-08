@@ -1,0 +1,21 @@
+# Para rodar testes: use `pytest nome_do_arquivo.py` ou apenas `pytest` no diretório.
+# pytest descobre arquivos e funções que comecem com `test_` ou terminem com `_test.py`.
+# Saídas comuns:
+#   . = PASSED
+#   F = FAILED
+#   s = SKIPPED
+#   x = XFAIL (falha esperada)
+#   X = XPASS (falha esperada passou)
+#   E = ERROR (erro fora do teste, ex: fixture)
+# Use `-v` para modo verboso. `--tb=no` remove o traceback.
+# Para rodar uma função específica: `pytest arquivo.py::nome_funcao`
+
+# Praticas comuns:
+Os arquivos de teste devem ser nomeados test_<algo>.py ou <algo>_test.py .
+Métodos e funções de teste devem ser nomeados test_<algo> .
+As classes de teste devem ser nomeadas Test<Something> .
+
+
+# Função será detectada pelo pytest se começar com "test_" e estiver em um arquivo "test_*.py".
+# O assert verifica se a condição é verdadeira; se não for, levanta AssertionError e o teste falha.
+# Qualquer exceção não tratada faz o teste falhar, mas usamos assert por padrão.

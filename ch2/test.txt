@@ -1,0 +1,76 @@
+Alguns Helpers
+
+assert something
+assert not something
+assert a == b
+assert a != b
+assert a is None
+assert a is not None
+assert a <= b
+
+pytest usa `assert` puro, diferente do unittest que tem métodos como assertEqual().
+Qualquer expressão falsa com `assert` falha o teste.
+pytest melhora os asserts com "assert rewriting", que mostra detalhes da falha.
+Com `-vv`, mostra atributos iguais/diferentes entre objetos.
+Rodar direto com `python arquivo.py` mostra apenas "AssertionError" sem detalhes.
+Preferir pytest para mensagens de erro ricas e precisas em testes.
+
+
+Teste falha se ocorrer qualquer exceção não tratada.
+Preferir usar `assert`. Em casos específicos, use `pytest.fail("msg")` para falhar explicitamente.
+`pytest.fail()` não fornece os detalhes ricos do assert rewriting.
+Útil em funções auxiliares ou validações complexas.
+
+
+# Funções auxiliares de asserção encapsulam validações complexas.
+# Ex: `assert_identical(c1, c2)` verifica igualdade completa + igualdade de `id`.
+# `__tracebackhide__ = True` oculta a função auxiliar do traceback para clareza.
+# Use `pytest.fail("mensagem")` para falha customizada dentro do helper.
+# Obs: assert rewriting só funciona em test_*.py ou conftest.py.
+
+# Use `pytest.raises(Exception)` para testar código que deve lançar exceção.
+# Ex: `with pytest.raises(TypeError): CardsDB()` → testa se TypeError é lançado.
+# Pode usar `match="regex"` para validar a mensagem da exceção.
+# Ou capturar como `as exc_info` e inspecionar via `str(exc_info.value)`.
+# Teste falha se nenhuma ou outra exceção for lançada.
+
+
+# Padrão recomendado para escrita de testes: Given-When-Then (BDD) ou Arrange-Act-Assert (TDD).
+#
+# Estrutura:
+# - GIVEN / Arrange: preparação do estado inicial (ex: criação de objetos, mocks, dados de entrada).
+# - WHEN / Act: execução da ação a ser testada (ex: chamada de método ou função).
+# - THEN / Assert: verificação do comportamento esperado via assert.
+#
+# Exemplo:
+#   def test_to_dict():
+#       # GIVEN um objeto Card com dados conhecidos
+#       card = Card("summary", "owner", "todo", 123)
+#
+#       # WHEN to_dict() é chamado
+#       result = card.to_dict()
+#
+#       # THEN o resultado deve conter os dados esperados
+#       expected = {"summary": "summary", "owner": "owner", "state": "todo", "id": 123}
+#       assert result == expected
+#
+# Vantagens:
+# - Clareza: o teste é lido como uma narrativa estruturada; facilita entender a intenção.
+# - Foco: restringe o escopo para testar um único comportamento por função de teste.
+# - Depuração: ao falhar, torna mais fácil localizar em qual fase ocorreu o erro.
+# - Expansão: pensar em estados iniciais (GIVEN) e variações de ações (WHEN) facilita gerar novos testes.
+#
+# ⚠️ Anti-padrão: "Arrange-Assert-Act-Assert-Act-Assert..." (interleaving)
+# - Caracterizado por múltiplas ações e asserções intercaladas em uma mesma função de teste.
+# - Prejudica a rastreabilidade da falha: não fica claro qual etapa causou o erro.
+# - Reduz a legibilidade e a manutenibilidade dos testes.
+# - Dificulta o entendimento da intenção original do teste, especialmente por outros desenvolvedores.
+#
+# Recomendação:
+# - Escreva testes curtos, focados, com uma única responsabilidade.
+# - Cada função de teste deve validar um único comportamento.
+# - Caso queira validar fluxos maiores (ex: workflows), divida em testes menores ou utilize testes end-to-end separados.
+#
+# Nota:
+# - Embora Given-When-Then e Arrange-Act-Assert venham de tradições diferentes (BDD e TDD), ambos reforçam o mesmo princípio:
+#   a separação clara de responsabilidades dentro do teste.
